@@ -1,101 +1,140 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+
+import { axiosApp } from "@/configs/servers/axios";
+import Button from "@/components/elements/button";
+import Input from "@/components/elements/input";
+import Header from "@/components/layout/header";
+import { socket } from "@/socket";
+import { useUserContext } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
+import { Room, UserRoom } from "@/types/rooms";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const { push } = useRouter();
+  const messageRef = useRef<HTMLInputElement>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [userRooms, setUserRooms] = useState<UserRoom[]>([]);
+
+  const { user } = useUserContext();
+
+  console.log({ userRooms });
+
+  useEffect(() => {
+    if (user) {
+      socket.emit("getUserRooms", user.username);
+    }
+    axiosApp(`/api/rooms/list`).then(({ data }) => setRooms(data));
+
+    socket.on("userRooms", (rooms) => {
+      setUserRooms(rooms);
+    });
+
+    return () => {
+      socket.off("userRooms");
+    };
+  }, [user]);
+
+  async function createRoom(e: React.FormEvent) {
+    e.preventDefault();
+
+    if (!messageRef.current?.value) return;
+
+    const { data } = await axiosApp.post(`/api/rooms/create`, {
+      name: messageRef.current?.value,
+    });
+
+    setRooms((prevRooms) => [...prevRooms, data]);
+    messageRef.current.value = "";
+  }
+
+  async function joinRoom(room: { _id: string; name: string }) {
+    socket.emit("joinRoom", {
+      roomId: room._id,
+      roomName: room.name,
+      username: user?.username,
+    });
+
+    push(`/room/${room._id}`);
+  }
+
+  return (
+    <>
+      <Header />
+      <div className="flex h-full">
+        <div className="flex flex-col bg-dark-800 w-1/5 h-full max-xl:w-2/5  max-sm:w-full">
+          <h3 className="text-white font-bold text-4xl pt-3 pl-3">Rooms</h3>
+
+          <form onSubmit={createRoom} className="flex gap-2 py-3 px-2">
+            <Input className="w-2/3" type="text" ref={messageRef} />
+            <Button className="w-1/3" type="submit">
+              Create Room
+            </Button>
+          </form>
+
+          <ul className="flex flex-col justify-center gap-3 my-4 striped">
+            {rooms
+              .filter(
+                (room) =>
+                  !userRooms.map(({ roomId }) => roomId).includes(room._id)
+              )
+              .map((room) => (
+                <li
+                  key={room._id}
+                  className="flex gap-2 items-center justify-between p-3"
+                >
+                  <span className="text-white font-bold">{room.name}</span>
+                  <Button
+                    onClick={() => joinRoom(room)}
+                    // className="bg-highlight-500 p-2 rounded-md text-white"
+                    // href={`/room/${room._id}`}
+                  >
+                    Join Room
+                  </Button>
+                </li>
+              ))}
+          </ul>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+        <div className="flex flex-col justify-center items-center w-4/5 h-full max-xl:w-3/5 max-sm:hidden">
+          {userRooms.length ? (
+            <div className="flex flex-col items-center w-full h-full ">
+              <h2 className="mb-5 text-white text-center font-bold text-4xl pt-3 pl-3 w-full max-md:text-2xl">
+                Rooms Joined
+              </h2>
+              <ul className="w-full striped">
+                {userRooms.map((room) => (
+                  <li
+                    key={room._id}
+                    className="flex gap-2 items-center p-3 striped"
+                  >
+                    <span className="text-white ">{room.roomName}</span>
+                    <Link
+                      className="bg-highlight-500 p-2 rounded-md text-white"
+                      href={`/room/${room.roomId}`}
+                    >
+                      Enter
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <div>
+              <img src="/logo.png" alt="logo" />
+              <h2 className="text-white text-center font-bold text-4xl pt-3 pl-3 max-md:text-2xl">
+                Welcome to Infinity Chat
+              </h2>
+              <span className="text-white text-center text-2xl pt-3 pl-3 max-md:text-xl">
+                Select a room or create a new one to start chatting!
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
   );
 }

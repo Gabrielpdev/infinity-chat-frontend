@@ -2,15 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .striped li:nth-child(odd) {
+    @apply bg-dark-700
+  }
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+
 :root {
-  --background: #ffffff;
+  --background: #1e2124;
   --foreground: #171717;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #191a1b;
+    --foreground: #282b30;
   }
 }
 
