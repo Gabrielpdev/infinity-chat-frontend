@@ -4,6 +4,7 @@ import { destroyCookiesAction } from "@/app/actions";
 import useMediaQuery from "@/components/lib/hooks/media-query";
 import { useUserContext } from "@/context/UserContext";
 import { socket } from "@/socket";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -11,7 +12,7 @@ import { FaSignOutAlt } from "react-icons/fa";
 
 export default function Header() {
   const { push } = useRouter();
-  const { user } = useUserContext();
+  const { user, setUser } = useUserContext();
 
   const isMobile = useMediaQuery(`(max-width: ${1023}px)`);
 
@@ -42,6 +43,7 @@ export default function Header() {
   }
 
   async function handleSignout() {
+    setUser(null);
     await destroyCookiesAction();
     push("/");
   }
@@ -49,7 +51,7 @@ export default function Header() {
   return (
     <div className="flex items-center justify-between gap-3 w-full py-2 px-5 bg-dark-500">
       <Link className="flex items-center justify-center gap-2" href="/">
-        <img className="w-10 h-10" src="/logo.png" alt="logo" />
+        <Image src="/logo.png" alt="logo" width={50} height={50} />
         <h1 className="text-white font-bold text-2xl max-sm:text-xl">
           Infinity Chat
         </h1>

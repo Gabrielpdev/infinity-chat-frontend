@@ -1,5 +1,5 @@
 import { getCookiesAction } from "@/app/actions";
-import axios, { RawAxiosRequestHeaders } from "axios";
+import axios from "axios";
 
 export const axiosApp = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND,

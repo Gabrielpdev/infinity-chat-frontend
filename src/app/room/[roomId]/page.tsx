@@ -1,24 +1,29 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 
-import Button from "@/components/elements/button";
-import Input from "@/components/elements/input";
-import useMediaQuery from "@/components/lib/hooks/media-query";
-import { useUserContext } from "@/context/UserContext";
-import { socket } from "@/socket";
-import { Message } from "@/types/messages";
-import { useParams, useRouter } from "next/navigation";
-import { axiosApp } from "@/configs/servers/axios";
-import { FaArrowAltCircleLeft, FaTrash, FaEdit } from "react-icons/fa";
 import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import { FaArrowAltCircleLeft, FaTrash, FaEdit } from "react-icons/fa";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import { ReactTinyLink } from "react-tiny-link";
+
+import { socket } from "@/socket";
+import { axiosApp } from "@/configs/servers/axios";
+import { useUserContext } from "@/context/UserContext";
+
+import useMediaQuery from "@/components/lib/hooks/media-query";
+import Button from "@/components/elements/button";
+import Input from "@/components/elements/input";
 import Spinner from "@/components/elements/spinner";
+
+import { Message } from "@/types/messages";
 
 export default function RoomMessage() {
   const params = useParams<{ roomId: string }>();
+  const roomId = params?.roomId;
+
   const { push } = useRouter();
   const { user } = useUserContext();
 
@@ -27,7 +32,6 @@ export default function RoomMessage() {
   const messageListRef = useRef<HTMLDivElement>(null);
 
   const [messages, setMessages] = useState<Message[]>([]);
-  const [roomId] = useState(params?.roomId);
   const [users, setUsers] = useState<string[]>([]);
 
   const [inputValue, setInputValue] = useState("");
@@ -167,6 +171,8 @@ export default function RoomMessage() {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     const parts = text.split(urlRegex);
 
+    console.log(parts);
+
     return parts.map((part, index) =>
       urlRegex.test(part) ? (
         <ReactTinyLink
@@ -180,10 +186,11 @@ export default function RoomMessage() {
       ) : (
         <ReactMarkdown
           key={index}
-          children={part}
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeRaw]}
-        />
+        >
+          {part}
+        </ReactMarkdown>
       )
     );
   }
@@ -193,8 +200,9 @@ export default function RoomMessage() {
   }
 
   function removeMessage(messageId: string) {
-    confirm("Are you sure you want to delete this message?") &&
+    if (confirm("Are you sure you want to delete this message?")) {
       socket.emit("removeMessage", { messageId });
+    }
   }
 
   function handleEditMessage(msg: Message) {

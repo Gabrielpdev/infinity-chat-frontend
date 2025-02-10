@@ -11,6 +11,7 @@ import { useUserContext } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
 import { Room, UserRoom } from "@/types/rooms";
 import Spinner from "@/components/elements/spinner";
+import Image from "next/image";
 
 export default function Home() {
   const { push } = useRouter();
@@ -134,7 +135,7 @@ export default function Home() {
           </div>
         ) : (
           <>
-            <img src="/logo.png" alt="logo" />
+            <Image src="/logo.png" alt="logo" width={100} height={100} />
             <h2 className="text-white text-center font-bold text-4xl pt-3 pl-3 max-md:text-2xl">
               Welcome to Infinity Chat
             </h2>

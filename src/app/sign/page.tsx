@@ -7,9 +7,12 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { axiosApp } from "@/configs/servers/axios";
 import { setCookiesAction } from "../actions";
+import { useUserContext } from "@/context/UserContext";
+import Image from "next/image";
 
 export default function Sign() {
   const router = useRouter();
+  const { setUser } = useUserContext();
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -29,6 +32,7 @@ export default function Sign() {
 
         await setCookiesAction({ token, user });
 
+        setUser(user);
         router.push("/");
       } else {
         console.error("Sign failed");
@@ -41,7 +45,7 @@ export default function Sign() {
   return (
     <div className="flex flex-col items-center justify-center h-full w-full container m-auto">
       <div className="flex flex-col items-center justify-center">
-        <img src="/logo.png" alt="logo" />
+        <Image src="/logo.png" alt="logo" width={100} height={100} />
         <h2 className="text-white text-center font-bold text-4xl pt-3 pl-3 max-md:text-2xl">
           Create an account
         </h2>

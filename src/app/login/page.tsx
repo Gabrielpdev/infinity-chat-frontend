@@ -7,9 +7,12 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { axiosApp } from "@/configs/servers/axios";
 import { setCookiesAction } from "../actions";
+import Image from "next/image";
+import { useUserContext } from "@/context/UserContext";
 
 export default function Login() {
   const router = useRouter();
+  const { setUser } = useUserContext();
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -28,7 +31,7 @@ export default function Login() {
         const { token, user } = response.data;
 
         await setCookiesAction({ token, user });
-
+        setUser(user);
         router.push("/");
       } else {
         console.error("Login failed");
@@ -41,7 +44,7 @@ export default function Login() {
   return (
     <div className="flex flex-col items-center justify-center h-full w-full container m-auto">
       <div className="flex flex-col items-center justify-center">
-        <img src="/logo.png" alt="logo" />
+        <Image src="/logo.png" alt="logo" width={100} height={100} />
         <h2 className="text-white text-center font-bold text-4xl pt-3 pl-3 max-md:text-2xl">
           Welcome to Infinity Chat
         </h2>
