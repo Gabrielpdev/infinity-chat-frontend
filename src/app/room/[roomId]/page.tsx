@@ -213,9 +213,9 @@ export default function RoomMessage() {
 
   return (
     <div className="flex h-full items-start justify-start max-lg:flex-col">
-      <div className="flex flex-col justify-between bg-dark-800 w-1/5 h-full px-2 max-lg:w-full max-lg:h-full max-lg:p-2 ">
+      <div className="flex flex-col justify-between bg-dark-800 w-1/5 h-full px-2 max-lg:w-full max-lg:h-auto max-lg:p-2 ">
         {isMobile ? (
-          <div className="flex w-full items-center justify-between h-full">
+          <div className="flex w-full items-center justify-between">
             <h3 className="flex w-full items-center gap-1 text-white font-bold text-xl">
               <Link href="/">
                 <FaArrowAltCircleLeft />

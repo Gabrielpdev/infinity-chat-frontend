@@ -2,6 +2,10 @@
 
 This is the frontend part of the Infinity Chat project.
 
+### [DEMO](https://infinity-chat-frontend.vercel.app)
+
+<img src='./.github/demo.gif' />
+
 ## Getting Started
 
 ### Prerequisites
@@ -14,8 +18,8 @@ This is the frontend part of the Infinity Chat project.
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/gabrielpdev/infinity-chat.git
-   cd infinity-chat/frontend
+   git clone https://github.com/gabrielpdev/infinity-chat-frontend.git
+   cd infinity-chat-frontend
    ```
 
 2. Install dependencies:
