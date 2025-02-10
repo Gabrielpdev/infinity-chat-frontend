@@ -1,6 +1,7 @@
 /* eslint-disable react/display-name */
 
 import React, { RefObject } from "react";
+import Spinner from "../spinner";
 
 interface ButtontProps extends React.HTMLProps<HTMLButtonElement> {
   children: React.ReactNode;
@@ -22,11 +23,7 @@ const Button = React.forwardRef(
         {...rest}
         className={`bg-highlight-500 p-2 rounded-md text-white ${rest.className}`}
       >
-        {isLoading ? (
-          <svg className="mr-3 size-5 animate-spin ..." viewBox="0 0 24 24" />
-        ) : (
-          children
-        )}
+        {isLoading ? <Spinner /> : children}
       </button>
     );
   }

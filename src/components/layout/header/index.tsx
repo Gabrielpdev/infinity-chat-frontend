@@ -1,6 +1,7 @@
 "use client";
 
 import { destroyCookiesAction } from "@/app/actions";
+import useMediaQuery from "@/components/lib/hooks/media-query";
 import { useUserContext } from "@/context/UserContext";
 import { socket } from "@/socket";
 import Link from "next/link";
@@ -11,6 +12,8 @@ import { FaSignOutAlt } from "react-icons/fa";
 export default function Header() {
   const { push } = useRouter();
   const { user } = useUserContext();
+
+  const isMobile = useMediaQuery(`(max-width: ${1023}px)`);
 
   const [isConnected, setIsConnected] = useState(false);
 
@@ -30,6 +33,8 @@ export default function Header() {
 
   function onConnect() {
     setIsConnected(true);
+
+    socket.emit("subscribeOnMyRooms", { username: user?.username });
   }
 
   function onDisconnect() {
@@ -71,7 +76,7 @@ export default function Header() {
           className="flex items-center gap-2 text-white bg-red-500 px-3 py-1 rounded"
         >
           <FaSignOutAlt />
-          Sign Out
+          {!isMobile && `Sign Out`}
         </button>
       </div>
     </div>

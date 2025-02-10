@@ -1,15 +1,52 @@
-1. **Back-End:**
-   - [ ] A escolha das tecnologias é flexível, escolha o que julgar ser melhor, desde que o código seja escrito em TypeScript.
-   - [ ] Implemente a troca de mensagens em tempo real.
-   - [ ] Crie endpoints para gerenciamento de salas e chat.
-2. **Front-End:**
-   - [ ] Desenvolva a interface do usuário usando React, utilize TypeScript
-   - [ ] Implemente funcionalidades de criação de salas, listagem de salas disponíveis, e envio/recebimento de mensagens em tempo real
-   - [ ] Garanta que a interface seja responsiva e de fácil navegação.
-3. **Funcionalidades Adicionais:**
-   - [ ] Autenticação de usuários (login e registro).
-   - [ ] Notificações em tempo real para novas mensagens em salas que o usuário está participando.
-   - [ ] Histórico de mensagens persistente por sala de chat.
-   - [ ] Escalar a comunicação em tempo real de forma eficiente em um ambiente distribuído.
-   - [ ] Mensagens enriquecidas, como imagens, links com previews, e markdown, além de criar um sistema de edição e exclusão de mensagens.
-   - [ ] Realize testes de performance para validar a escalabilidade do sistema e identificar possíveis gargalos.
+# Infinity Chat Frontend
+
+This is the frontend part of the Infinity Chat project.
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v14 or higher)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/gabrielpdev/infinity-chat.git
+   cd infinity-chat/frontend
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+### Running the Development Server
+
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+### Environment Variables
+
+Create a `.env` file in the root of the `frontend` directory and add the following environment variables:
+
+```
+NEXT_PUBLIC_BACKEND=http://localhost:3000 or your backend url
+```
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.

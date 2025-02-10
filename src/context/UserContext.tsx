@@ -1,5 +1,6 @@
 "use client";
 import { getCookiesAction } from "@/app/actions";
+import Header from "@/components/layout/header";
 import {
   createContext,
   useContext,
@@ -30,6 +31,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
+      {user && <Header />}
       {children}
     </UserContext.Provider>
   );
