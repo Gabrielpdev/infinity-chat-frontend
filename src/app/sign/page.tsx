@@ -2,7 +2,7 @@
 
 import Button from "@/components/elements/button";
 import Input from "@/components/elements/input";
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { axiosApp } from "@/configs/servers/axios";
@@ -13,6 +13,7 @@ import Image from "next/image";
 export default function Sign() {
   const router = useRouter();
   const { setUser } = useUserContext();
+  const [isLoading, setIsLoading] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -22,6 +23,7 @@ export default function Sign() {
     const password = formData.get("password") as string;
 
     try {
+      setIsLoading(true);
       const response = await axiosApp.post("/api/users/register", {
         username,
         password,
@@ -39,6 +41,8 @@ export default function Sign() {
       }
     } catch (error) {
       console.error("An error occurred", error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -58,7 +62,9 @@ export default function Sign() {
         <Input type="text" name="username" placeholder="Username" />
         <Input type="password" name="password" placeholder="Password" />
 
-        <Button type="submit">Create</Button>
+        <Button isLoading={isLoading} type="submit">
+          Create
+        </Button>
       </form>
 
       <Link href="login" className="text-blue-200 mt-3">

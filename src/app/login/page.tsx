@@ -2,7 +2,7 @@
 
 import Button from "@/components/elements/button";
 import Input from "@/components/elements/input";
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { axiosApp } from "@/configs/servers/axios";
@@ -14,6 +14,8 @@ export default function Login() {
   const router = useRouter();
   const { setUser } = useUserContext();
 
+  const [isLoading, setIsLoading] = useState(false);
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
 
@@ -22,6 +24,7 @@ export default function Login() {
     const password = formData.get("password") as string;
 
     try {
+      setIsLoading(true);
       const response = await axiosApp.post("/api/users/login", {
         username,
         password,
@@ -38,6 +41,8 @@ export default function Login() {
       }
     } catch (error) {
       console.error("An error occurred", error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -57,7 +62,9 @@ export default function Login() {
         <Input type="text" name="username" placeholder="Username" />
         <Input type="password" name="password" placeholder="Password" />
 
-        <Button type="submit">Login</Button>
+        <Button isLoading={isLoading} type="submit">
+          Login
+        </Button>
       </form>
 
       <Link href="sign" className="text-blue-200 mt-3">

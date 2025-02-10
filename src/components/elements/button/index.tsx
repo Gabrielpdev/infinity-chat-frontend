@@ -23,7 +23,13 @@ const Button = React.forwardRef(
         {...rest}
         className={`bg-highlight-500 p-2 rounded-md text-white ${rest.className}`}
       >
-        {isLoading ? <Spinner /> : children}
+        {isLoading ? (
+          <div className="flex items-center justify-center">
+            <Spinner />
+          </div>
+        ) : (
+          children
+        )}
       </button>
     );
   }
